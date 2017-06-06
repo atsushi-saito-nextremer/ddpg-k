@@ -3,7 +3,7 @@ import math
 from keras.initializations import normal, identity, uniform
 from keras.models import model_from_json
 from keras.models import Sequential, Model
-from keras.engine.training import collect_trainable_weights
+from keras.engine.training import * #collect_trainable_weights
 from keras.layers import Dense, Flatten, Input, merge, Lambda, Activation
 from keras.optimizers import Adam
 import tensorflow as tf
@@ -25,7 +25,7 @@ class ActorNetwork(object):
         self.params_grad = tf.gradients(self.model.output, self.weights, -self.action_gradient)
         grads = zip(self.params_grad, self.weights)
         self.optimize = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(grads)
-        self.sess.run(tf.initialize_all_variables())
+        self.sess.run(tf.global_variables_initializer())
 
     def train(self, states, action_grads):
         self.sess.run(self.optimize, feed_dict={

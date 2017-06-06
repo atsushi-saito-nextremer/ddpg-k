@@ -2,7 +2,7 @@ import numpy as np
 import math
 from keras.initializations import normal, identity,uniform
 from keras.models import model_from_json
-from keras.engine.training import collect_trainable_weights
+from keras.engine.training import * # collect_trainable_weights
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Input, merge, Lambda, Activation
 from keras.models import Sequential, Model
@@ -27,7 +27,7 @@ class CriticNetwork(object):
         self.model, self.action, self.state = self.create_critic_network(state_size, action_size)  
         self.target_model, self.target_action, self.target_state = self.create_critic_network(state_size, action_size)  
         self.action_grads = tf.gradients(self.model.output, self.action)  #GRADIENTS for policy update
-        self.sess.run(tf.initialize_all_variables())
+        self.sess.run(tf.global_variables_initializer())
 
     def gradients(self, states, actions):
         return self.sess.run(self.action_grads, feed_dict={

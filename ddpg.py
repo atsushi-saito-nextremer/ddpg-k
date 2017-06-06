@@ -5,7 +5,8 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.optimizers import Adam
 import tensorflow as tf
-from keras.engine.training import collect_trainable_weights
+from keras.engine.training import *
+# collect_trainable_weights
 import json
 
 from ReplayBuffer import ReplayBuffer
@@ -46,10 +47,10 @@ def playGame(train_indicator=0):    #1 means Train, 0 means simply Run
     actor = ActorNetwork(sess, state_dim, action_dim, BATCH_SIZE, TAU, LRA)
     critic = CriticNetwork(sess, state_dim, action_dim, BATCH_SIZE, TAU, LRC)
     buff = ReplayBuffer(BUFFER_SIZE)    #Create replay buffer
-
+    print( "model part at ddpg.py" )
     # Generate a Torcs environment
     env = robotGame()
-
+    print("env is set")
     #Now load the weight
     print("Now we load the weight")
     try:
@@ -109,6 +110,7 @@ def playGame(train_indicator=0):    #1 means Train, 0 means simply Run
                     y_t[k] = rewards[k] + GAMMA*target_q_values[k]
        
             if (train_indicator):
+                print "grad update"
                 loss += critic.model.train_on_batch([states,actions], y_t) 
                 a_for_grad = actor.model.predict(states)
                 grads = critic.gradients(states, a_for_grad)
@@ -139,4 +141,4 @@ def playGame(train_indicator=0):    #1 means Train, 0 means simply Run
     print("Finish.")
 
 if __name__ == "__main__":
-    playGame()
+    playGame(train_indicator=1)
